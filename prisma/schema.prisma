@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  password          String?
+  isAdmin           Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  // Connecting to profile as one to one
+  profile Profile?
+
+  // Connecting to books as one to many
+  books Book[]
+  
+  @@map("users")
+}
+
+model Profile {
+  id                  Int         @id           @default (autoincrement())
+  bio                 String?
+  fullName            String?
+  phoneNumber         String?
+  avatar              String?
+  user User           @relation(fields: [userId], references: [id])
+  userId              Int        @unique // Key feature
+  createdAt           DateTime                  @default(now())
+  updateAt            DateTime                  @updatedAt
+
+  @@map("profiles")
+}
+
+model Category {
+id                    Int              @id           @default(autoincrement())
+name                  String?
+description           String?
+createdAT             DateTime        @default(now())
+updatedAT             DateTime        @updatedAt
+
+// One to many independent of books
+books Book[]
+
+@@map ("categories")
+}
+
+model Book {
+  id                  Int       @id     @default(autoincrement())
+  title               String
+  author              String
+  price               String
+  description         String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // one to many depending on category
+  category            Category  @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+
+  // One to many depending on user
+  user                User      @relation(fields: [userId], references: [id])
+  userId              Int
+
+  @@map("books")
+}
