@@ -102,11 +102,11 @@ router.post("/login", async (req, res, next) => {
     // Check if the password is correct
     const verifyPassword = await argon.verify(user.password, password);
 
-   try {
-      await sendWelcomeBackEmail(user.email);
-    } catch (error) {
-      console.log(error)
-    }
+  //  try {
+  //     await sendWelcomeBackEmail(user.email);
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
 
     // Create token
     const payload = {
